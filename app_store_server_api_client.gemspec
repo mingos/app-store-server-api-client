@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "lib/app_store_server_api_client/"
+require_relative "lib/app_store_server_api/version"
 
 Gem::Specification.new do |spec|
   spec.name = "app_store_server_api_client"
@@ -8,13 +8,13 @@ Gem::Specification.new do |spec|
   spec.authors = ["mingos"]
   spec.email = ["mingos@pumb.jp"]
 
-  spec.summary = "TODO: Write a short summary, because RubyGems requires one."
-  spec.description = "TODO: Write a longer description or delete this line."
+  spec.summary = "A Ruby client for App Store Server API"
+  spec.description = "Manage your customers' App Store transactions from your server."
   spec.homepage = "https://github.com/mingos/app-store-server-api-client"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.3.0"
 
-  spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
+  # spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
