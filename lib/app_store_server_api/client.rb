@@ -6,6 +6,7 @@ require 'json'
 require 'openssl'
 
 module AppStoreServerApi
+
   class Client
     attr_reader :environment, :issuer_id, :key_id, :private_key, :bundle_id
 
@@ -78,8 +79,17 @@ module AppStoreServerApi
     # @param [String] transaction_id The identifier of a transaction
     # @param [Hash] params request params
     # @return [Hash] transaction history
-    def get_transaction_history(transaction_id, params: {})
+    def get_transaction_history(transaction_id, params: nil)
       path = "/inApps/v2/history/#{transaction_id}"
+      response = do_request(path, params: params)
+      JSON.parse(response.body)
+    end
+
+    # Get All Subscription Statuses
+    # @see https://developer.apple.com/documentation/appstoreserverapi/get-v1-subscriptions-_transactionid_
+    # @param [String] transaction_id The identifier of a transaction
+    def get_all_subscription_statuses(transaction_id, params: nil)
+      path = "/inApps/v1/subscriptions/#{transaction_id}"
       response = do_request(path, params: params)
       JSON.parse(response.body)
     end

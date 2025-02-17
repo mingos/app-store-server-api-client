@@ -258,6 +258,26 @@ RSpec.describe AppStoreServerApi do
 
     end
 
+    describe '#get_all_subscription_statuses', :get_all_subscription_statuses do
+
+      context 'when no exist transaction_id' do
+
+        it 'get not found error' do
+          expect {
+            client.get_all_subscription_statuses(no_exist_transaction_id)
+          }.to raise_error(AppStoreServerApi::Error::TransactionIdNotFoundError) do |error|
+            expect(error.code).to eq 4040010
+            expect(error.message).to eq 'Transaction id not found.'
+          end
+
+        end
+
+      end
+
+      # ToDo: add test case exist transaction_id
+
+    end
+
   end
 
 end
