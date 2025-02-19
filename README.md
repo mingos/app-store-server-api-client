@@ -9,6 +9,7 @@ the [App Store Server API](https://developer.apple.com/documentation/appstoreser
 * [Request a Test Notification](https://developer.apple.com/documentation/appstoreserverapi/post-v1-notifications-test)
 * [Get Test Notification Status](https://developer.apple.com/documentation/appstoreserverapi/get-v1-notifications-test-_testnotificationtoken_)
 * [Get Transaction History](https://developer.apple.com/documentation/appstoreserverapi/get-v2-history-_transactionid_)
+* [Get All Subscription Statuses](https://developer.apple.com/documentation/appstoreserverapi/get-v1-subscriptions-_transactionid_) 
 
 ## Requirements
 
@@ -139,6 +140,29 @@ data = client.get_transaction_history(transaction_id,
 transactions = AppStoreServerApi::Utils::Decoder.decode_transactions(signed_transactions:
   data["signedTransactions"])
 ```
+
+### Get All Subscription Statuses
+
+[Get All Subscription Statuses](https://developer.apple.com/documentation/appstoreserverapi/get-v1-subscriptions-_transactionid_)
+
+Get the statuses for all of a customer’s auto-renewable subscriptions in your app.
+
+```ruby
+# all statuses
+data = client.get_all_subscription_statuses(transaction_id)
+
+# filter by status
+data = client.get_all_subscription_statuses(transaction_id, params:{status: 1})
+```
+
+[The status of an auto-renewable subscription](https://developer.apple.com/documentation/appstoreserverapi/status)
+
+status possible values:
+* 1: The auto-renewable subscription is active.
+* 2: The auto-renewable subscription is expired.
+* 3: The auto-renewable subscription is in a billing retry period.
+* 4: The auto-renewable subscription is in a Billing Grace Period.
+* 5: The auto-renewable subscription is revoked. The App Store refunded the transaction or revoked it from Family Sharing.
 
 ## Error Handling
 
