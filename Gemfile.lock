@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    app_store_server_api_client (0.1.0)
+    app_store_server_api_client (0.1.1)
       faraday (~> 2.12)
       jwt (~> 2.8)
       retriable (~> 3.1)
