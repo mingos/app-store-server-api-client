@@ -6,14 +6,49 @@ module AppStoreServerApi
 
   module Utils
 
+    # Retriable options
+    # @see https://github.com/kamui/retriable
+    class RetriableOptions
+
+      # Number of attempts to make at running your code block (includes initial attempt).
+      # @return [Integer] default: 3
+      attr_reader :tries
+
+      # The initial interval in seconds between tries.
+      # @return [Float] default: 0.5
+      attr_reader :base_interval
+
+      # Each successive interval grows by this factor.
+      # A multiplier of 1.5 means the next interval will be 1.5x the current interval.
+      # @return [Float] default: 1.5
+      attr_reader :multiplier
+
+      # The maximum amount of total time in seconds that code is allowed to keep being retried.
+      # @return [Float]
+      attr_reader :max_elapsed_time
+
+      # The maximum interval in seconds that any individual retry can reach.
+      # @return [Float]
+      attr_reader :max_interval
+
+      def initialize(tries: 3, base_interval: 0.5, multiplier: 1.5, max_elapsed_time: 900, max_interval: 60)
+        @tries = tries
+        @base_interval =base_interval
+        @multiplier = multiplier
+        @max_elapsed_time = max_elapsed_time
+        @max_interval = max_interval
+      end
+
+    end
+
     class HttpClient
       DEFAULT_OPEN_TIMEOUT = 10
       DEFAULT_READ_TIMEOUT = 30
       RETRY_ERRORS = [Faraday::TimeoutError, Faraday::ConnectionFailed, Faraday::ServerError]
 
       # initialize client
-      # @param open_timeout [Integer] open timeout
-      # @param read_timeout [Integer] read timeout
+      # @param [Integer] open_timeout open timeout
+      # @param [Integer] read_timeout read timeout
       def initialize(open_timeout: DEFAULT_OPEN_TIMEOUT, read_timeout: DEFAULT_READ_TIMEOUT)
         @open_timeout = open_timeout
         @read_timeout = read_timeout
@@ -33,10 +68,10 @@ module AppStoreServerApi
       end
 
       # send request
-      # @param url [String] request url
-      # @param method [Symbol] request method(:get, :post, :put, :patch, :delete)
-      # @param params [Hash,String,nil] request params
-      # @param headers [Hash] request headers
+      # @param [String] url request url
+      # @param [Symbol] method request method(:get, :post, :put, :patch, :delete)
+      # @param [Hash,String,nil] params request params
+      # @param [Hash] headers request headers
       # @return [Faraday::Response]
       def request(url:, method: :get, params: {}, headers: {})
         method = method.to_sym
@@ -54,22 +89,18 @@ module AppStoreServerApi
       end
 
       # send request with retry
-      # @param url [String] request url
-      # @param method [Symbol] request method
-      # @param params [Hash,String,nil] request params
-      # @param headers [Hash] request headers
-      # @param retries [Integer] retry count
-      # @param base_interval [Float] base interval
-      # @param multiplier [Float] multiplier
-      # @param max_interval [Float] max interval
+      # @param [String] url request url
+      # @param [Symbol] method request method
+      # @param [Hash,String,nil] params request params
+      # @param [Hash] headers request headers
+      # @param [RetriableOptions] retriable_options retriable options
       # @return [Faraday::Response]
-      def request_with_retry(url:, method: :get, params: {}, headers: {}, retries: 3,
-        base_interval: 0.5, multiplier: 1.0, max_interval: 30)
-
-        Retriable.retriable tries: retries,
-          base_interval: base_interval,
-          max_interval: max_interval,
-          multiplier: multiplier,
+      def request_with_retry(url:, method: :get, params: {}, headers: {}, retriable_options: RetriableOptions.new)
+        Retriable.retriable tries: retriable_options.tries,
+          base_interval: retriable_options.max_interval,
+          max_interval: retriable_options.max_interval,
+          multiplier: retriable_options.multiplier,
+          max_elapsed_time: retriable_options.max_elapsed_time,
           on: RETRY_ERRORS do
           request(url: url, method: method, params: params, headers: headers)
         end

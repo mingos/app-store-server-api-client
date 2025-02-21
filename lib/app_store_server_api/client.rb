@@ -20,11 +20,11 @@ module AppStoreServerApi
     }.freeze
 
     # initialize client
-    # @param private_key [String] p8 key
-    # @param key_id [String] Your private key ID from App Store Connect (Ex: 2X9R4HXF34)
-    # @param issuer_id [String] Your issuer ID from the Keys page in App Store Connect
-    # @param bundle_id [String] Your app’s bundle ID (Ex: “com.example.testbundleid”)
-    # @param environment [Symbol] :production or :sandbox
+    # @param [String] private_key p8 key
+    # @param [String] key_id Your private key ID from App Store Connect (Ex: 2X9R4HXF34)
+    # @param [String] issuer_id Your issuer ID from the Keys page in App Store Connect
+    # @param [String] bundle_id Your app’s bundle ID (Ex: “com.example.testbundleid”)
+    # @param [Symbol] environment :production or :sandbox
     def initialize(private_key:, key_id:, issuer_id:, bundle_id:, environment: :production)
       self.environment = environment.to_sym
       @issuer_id = issuer_id
@@ -35,7 +35,7 @@ module AppStoreServerApi
     end
 
     # set environment
-    # @param env [Symbol] :production or :sandbox
+    # @param [Symbol] env :production or :sandbox
     # @raise [ArgumentError] if env is not :production or :sandbox
     def environment=(env)
       unless ENVIRONMENTS.include?(env)
@@ -95,8 +95,8 @@ module AppStoreServerApi
     end
 
     # generate bearer token
-    # @param issued_at [Time] issued at
-    # @param expired_in [Integer] expired in seconds (max 3600)
+    # @param [Time] issued_at issued at
+    # @param [Integer] expired_in expired in seconds (max 3600)
     # @return [String] bearer token
     def generate_bearer_token(issued_at: Time.now, expired_in: 3600)
       # expirations longer than 60 minutes will be rejected
